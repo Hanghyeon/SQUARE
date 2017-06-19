@@ -54,7 +54,7 @@ public class SwitchWeapons : MonoBehaviour
 
     public static System.Action OnSetGunsArray;
 
-    private int levels = (1 << 1) | (1 << 2);
+    private int[] initlevels = { 0, 1, 2 };
 
     ShotSender sSender = null;
 
@@ -64,11 +64,16 @@ public class SwitchWeapons : MonoBehaviour
     private void OnLevelWasLoaded(int level)
     {
         OnDestroy();
-
-        if (level == 1 || level == 2)
+        
+        for(int num=0; num<initlevels.Length;num++)
         {
-            Awake();
+            if (level == initlevels[num])
+            {
+                Awake();
+            }
         }
+
+        
     }
 
     void Awake()
@@ -94,7 +99,6 @@ public class SwitchWeapons : MonoBehaviour
         else
             print("ERROR~!!! OnSetGunsArray Action is Null~!!!!!!");
 
-        index = 0;
 
         TargetSender.OnGyroRotSet += changeGun;     //이동하면서 득득득 떨리는거 없애려고 넣음
 
@@ -104,6 +108,8 @@ public class SwitchWeapons : MonoBehaviour
         else
             tutorialText = null;
 
+
+        if(checkIndex(guns.Count))
 
         foreach (var item in guns)
         {
@@ -118,6 +124,8 @@ public class SwitchWeapons : MonoBehaviour
             else
                 print("ERROR~!!!! guns List have Null~~!!!!!!");
         }
+
+        index = 0;
 
         //Start with the first gun selected
         currentGunObject = guns[index];
@@ -138,8 +146,7 @@ public class SwitchWeapons : MonoBehaviour
 
     void Start()
     {
-
-
+        
         //Start the tutorial text timer
         StartCoroutine(TutorialTextTimer());
 
@@ -159,43 +166,43 @@ public class SwitchWeapons : MonoBehaviour
 
     void Update()
     {
-        //Get the ammo left from the current gun
-        //and show it as a text
-
-        if (currentGunObject.GetComponentInChildren<ArmControllerScript>().nowReloading == false)
-        {
-            ammoLeftText[index].text = currentGunObject.GetComponentInChildren
-                <ArmControllerScript>().currentAmmo.ToString();
-            ammoLeftSlide[index].value = (float)currentGunObject.GetComponentInChildren<ArmControllerScript>().currentAmmo /
-                                    currentGunObject.GetComponentInChildren<ArmControllerScript>().ShootSettings.ammo;
-        }
-        else
-        {
-            ammoLeftText[index].text = "-";
-            ammoLeftSlide[index].value = 0f;
-        }
-
-        //Chage Color (Orange, Red) for empty the mag
-        if (currentGunObject.GetComponentInChildren<ArmControllerScript>().currentAmmo <= 0)
-        {
-            ammoLeftSlide[index].GetComponentInChildren<Image>().color = new Color(red.x, red.y, red.z);
-            ammoLeftText[index].color = new Color(red.x, red.y, red.z);
-        }
-        else if (currentGunObject.GetComponentInChildren
-            <ArmControllerScript>().currentAmmo <= currentGunObject.GetComponentInChildren
-            <ArmControllerScript>().ShootSettings.ammo * chageWarning)
-        {
-            ammoLeftSlide[index].GetComponentInChildren<Image>().color = new Color(orange.x, orange.y, orange.z);
-            ammoLeftText[index].color = new Color(orange.x, orange.y, orange.z);
-        }
-        else
-        {
-            ammoLeftSlide[index].GetComponentInChildren<Image>().color = new Color(nomal.x, nomal.y, nomal.z);
-            ammoLeftText[index].color = new Color(nomal.x, nomal.y, nomal.z);
-        }
-
         if (checkIndex(index))
         {
+            //Get the ammo left from the current gun
+            //and show it as a text
+
+            if (currentGunObject.GetComponentInChildren<ArmControllerScript>().nowReloading == false)
+            {
+                ammoLeftText[index].text = currentGunObject.GetComponentInChildren
+                    <ArmControllerScript>().currentAmmo.ToString();
+                ammoLeftSlide[index].value = (float)currentGunObject.GetComponentInChildren<ArmControllerScript>().currentAmmo /
+                                        currentGunObject.GetComponentInChildren<ArmControllerScript>().ShootSettings.ammo;
+            }
+            else
+            {
+                ammoLeftText[index].text = "-";
+                ammoLeftSlide[index].value = 0f;
+            }
+
+            //Chage Color (Orange, Red) for empty the mag
+            if (currentGunObject.GetComponentInChildren<ArmControllerScript>().currentAmmo <= 0)
+            {
+                ammoLeftSlide[index].GetComponentInChildren<Image>().color = new Color(red.x, red.y, red.z);
+                ammoLeftText[index].color = new Color(red.x, red.y, red.z);
+            }
+            else if (currentGunObject.GetComponentInChildren
+                <ArmControllerScript>().currentAmmo <= currentGunObject.GetComponentInChildren
+                <ArmControllerScript>().ShootSettings.ammo * chageWarning)
+            {
+                ammoLeftSlide[index].GetComponentInChildren<Image>().color = new Color(orange.x, orange.y, orange.z);
+                ammoLeftText[index].color = new Color(orange.x, orange.y, orange.z);
+            }
+            else
+            {
+                ammoLeftSlide[index].GetComponentInChildren<Image>().color = new Color(nomal.x, nomal.y, nomal.z);
+                ammoLeftText[index].color = new Color(nomal.x, nomal.y, nomal.z);
+            }
+
             //If key 1 is pressed, and noSwitch is false in GunScript.cs
             if (guns[0].gameObject.GetComponent<GetFollower>().follower.wType == WeaponType.Pistol &&
                currentGunObject.GetComponentInChildren<ArmControllerScript>().noSwitch == false)
@@ -252,6 +259,10 @@ public class SwitchWeapons : MonoBehaviour
                 changeGun(index);
             }
         }
+        else
+        {
+            print("ERROR~~~~!!!!!!! Guns List is wrong~~!!!!!!");
+        }
         ////If key 5 is pressed, and noSwitch is false in GunScript.cs
         //if (Input.GetKeyDown(KeyCode.Alpha5) &&
         //   currentGunObject.GetComponentInChildren<ArmControllerScript>().noSwitch == false)
@@ -292,8 +303,11 @@ public class SwitchWeapons : MonoBehaviour
     {
         if (num > guns.Count)
             return false;
-        else if (num < 0)
+        else if (num < 0 && guns.Count != 0)
             return false;
+        else if (guns.Count == 0)
+            return false;
+
         else
         {
             index = num;

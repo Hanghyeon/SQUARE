@@ -5,10 +5,14 @@ using UnityEngine.SceneManagement;
 
 public enum MenuType
 {
-    QuitGame = -1,
+    QuitGame = -3,
+    StayGame = -2,
+    GotoQuit = -1,
     None = 0,
-    StartPlay = 1,
+    GotoPlay = 1,
     PauseGame = 2,
+    
+
 }
 
 public enum camSide
@@ -98,11 +102,17 @@ public class MenuDefualt : MonoBehaviour {
             case MenuType.QuitGame:
                 QuitGame();
                 break;
+            case MenuType.StayGame:
+                GotoGallery();
+                break;
+            case MenuType.GotoQuit:
+                GotoQuit();
+                break;
             case MenuType.None:
                 print("Did not setting this Menu. dosen't work");
                 break;
-            case MenuType.StartPlay:
-                StartGame();
+            case MenuType.GotoPlay:
+                GotoPlayGame();
                 break;
             case MenuType.PauseGame:
                 PauseGame();
@@ -110,22 +120,31 @@ public class MenuDefualt : MonoBehaviour {
         }
     }
 
-    void StartGame()
+    void GotoPlayGame()
     {
-        
         SceneManager.LoadScene("MainGame");
     }
 
-    void QuitGame()
+    void GotoQuit()
     {
-
         SceneManager.LoadScene("CheckQuitGame");
     }
 
     void PauseGame()
     {
-        CustomMover.Singleton.canMove = false;         //플레이어의 이동을 멈추고, 자이로와 총은 살아있어야 함
+        CustomMover.Singleton.canMove = !CustomMover.Singleton.canMove;         //플레이어의 이동을 멈추고, 자이로와 총은 살아있어야 함 
         //적을 멈추고
-
     }
+
+    void QuitGame()
+    {
+        Application.Quit();
+    }
+
+    void GotoGallery()
+    {
+        SceneManager.LoadScene("Gallery");
+    }
+
+
 }
