@@ -29,6 +29,7 @@ public class MenuDefualt : MonoBehaviour {
     public List<SpriteRenderer> sprites = new List<SpriteRenderer>();
     public Transform Player=null;
     public MenuType mt = MenuType.None;
+    public bool isLookAt = false;
 
     List<Camera> cams = new List<Camera>();
     bool temp;
@@ -53,7 +54,8 @@ public class MenuDefualt : MonoBehaviour {
     // Update is called once per frame
     void Update()
     {
-        this.transform.LookAt(Player);
+        if (isLookAt)
+            this.transform.LookAt(Player);
 
         if (sprites.Count > 0)
         {
