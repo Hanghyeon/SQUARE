@@ -286,8 +286,6 @@ public class ArmControllerScript : MonoBehaviour {
 				StartCoroutine(ProjectileShoot());
 			}
 
-            ShootMenu();
-
 			//If melee weapon is used, play random attack animation on left click
 			if (MeleeSettings.isMeleeWeapon == true) {
 				//Play attack animation 1, if not currently attacking or drawing weapon
@@ -318,7 +316,6 @@ public class ArmControllerScript : MonoBehaviour {
 			//Shoot automatic
 			if (Time.time - lastFired > 1 / ShootSettings.fireRate) {
 				Shoot();
-                ShootMenu();
                 lastFired = Time.time;
 			}
 		}
@@ -341,7 +338,6 @@ public class ArmControllerScript : MonoBehaviour {
 			isGrenadeReloading = true;
 			//Play throwing animations
 			anim.SetTrigger ("Throw");
-            ShootMenu();
             //Start throwing grenade
             StartCoroutine(GrenadeThrow());
 			//Start hide grenade timer
@@ -563,6 +559,8 @@ public class ArmControllerScript : MonoBehaviour {
 
                 print(this.gameObject.name + "~Shoot~" + hit.transform.gameObject.name);
 
+                ShootMenu(hit);
+
                 if (hit.transform.tag == "Enemy")
                 {
                     hit.transform.gameObject.GetComponent<Enemy_Logic>().Hit = true;
@@ -659,24 +657,18 @@ public class ArmControllerScript : MonoBehaviour {
     }
 
 
-    void ShootMenu()
+    void ShootMenu(RaycastHit hit)
     {
-        RaycastHit hit;
-        
-        //트루일 경우 발사되어서 머쓸브레이크가 막 나오려는 중임
-        if(sSender.isFire)
+        if (hit.transform.tag == "Menu" &&
+            hit.transform.gameObject.GetComponent<MenuDefualt>() != null)
         {
-            if (Physics.Raycast(Spawnpoints.bulletSpawnPoint.transform.position,
-                                Spawnpoints.bulletSpawnPoint.transform.forward, out hit, ShootSettings.bulletDistance, layerMask))
-            {
-                if (hit.transform.tag == "Menu")
-                {
-                    //hit.transform.gameObject.GetComponent<>();        //메뉴 관련 컴포넌트 안에 있는 함수를 실행함
-                    hit.transform.gameObject.GetComponent<MenuDefualt>().workMenu();
-                }
-            }
+            hit.transform.gameObject.GetComponent<MenuDefualt>().workMenu();
         }
-
+        else if (hit.transform.tag == "Menu" &&
+            hit.transform.gameObject.GetComponent<MenuLite>() != null)
+        {
+            hit.transform.gameObject.GetComponent<MenuLite>().ChangeHit();
+        }
     }
 
     //Shoot
@@ -721,6 +713,8 @@ public class ArmControllerScript : MonoBehaviour {
 
 
             print(this.gameObject.name + "~Shoot~" + hit.transform.gameObject.name);
+
+            ShootMenu(hit);
 
             if (hit.transform.tag == "Enemy")
             {
