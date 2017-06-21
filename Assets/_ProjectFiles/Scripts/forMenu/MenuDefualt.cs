@@ -10,7 +10,7 @@ public enum MenuType
     GotoQuit = -1,
     None = 0,
     GotoPlay = 1,
-    PauseGame = 2,
+    Pause = 2,
     Resume = 3
 }
 
@@ -24,55 +24,63 @@ public enum camSide
 
 public class MenuDefualt : MonoBehaviour {
 
+    
     public float switchAngle = 50f;
     public List<SpriteRenderer> sprites = new List<SpriteRenderer>();
     public Transform Player=null;
     public MenuType mt = MenuType.None;
     public bool isLookAt = false;
 
-    public Transform screenTF = null;
-    public GameObject pauseMenu = null;
-    public GameObject pauseScreen = null;
-    List<Camera> cams = new List<Camera>();
+    //public Transform screenTF = null;
+    //public GameObject pauseMenu = null;
+    //public GameObject pauseScreen = null;
     bool temp;
 
     private void Awake()
     {
+        if ((mt == MenuType.Pause || mt == MenuType.Resume || mt == MenuType.QuitGame))
+        {
+
+        }
+
+
         GameObject go = GameObject.Find("Head");
         if (go != null)
+        {
             Player = go.transform;
+            go = go.transform.root.gameObject;
+        }
         else
             print("ERROR~!! Player Transform is NULL~!!!!");
 
-        GameObject go2 = GameObject.Find("PauseScreen");
-        if (go2 != null)
-            pauseScreen = go2;
-        else
-            print("ERROR~!! PauseScreen is NULL~!!!!");
+        //Transform go2 = this.transform.Find("../../../PauseScreen");        //CameraGroup_Done/Head/Menu/PuaseGame 에서만 쓸 수 있음
+        //if (go2 != null)
+        //{
+        //    pauseScreen = go2.gameObject;
+        //    go2 = go2.root;
+        //}
+        //else
+        //    print("ERROR~!! PauseScreen is NULL~!!!!");
 
-        GameObject go3 = GameObject.Find("ScreenPOS");
-        if (go3 != null)
-            screenTF = go3.transform;
-        else
-            print("ERROR~!! screenTF is NULL~!!!!");
+        //Transform go3 = this.transform.Find("../ScreenPOS");
+        //if (go3 != null)
+        //{
+        //    screenTF = go3.transform;
+        //    go3 = go3.root;
+        //}
+        //else
+        //    print("ERROR~!! screenTF is NULL~!!!!");
 
-        GameObject go4 = GameObject.Find("CameraGroup_Done/Head/Menu/PauseGame");
-        if (go4 != null)
-            pauseMenu = go4;
-        else
-            print("ERROR~!! screenTF is NULL~!!!!");
+        //GameObject go4 = GameObject.Find("CameraGroup_Done/Head/Menu/PauseGame");
+        //if (go4 != null)
+        //{
+        //    pauseMenu = go4;
+        //    go4 = go4.transform.root.gameObject;
+        //}
+        //else
+        //    print("ERROR~!! screenTF is NULL~!!!!");
 
-        foreach (Camera item in Player.GetComponentsInChildren<Camera>())
-        {
-            if (item.name != "VufoCamera")
-                cams.Add(item);
-        }
-
-    }
-
-    private void Start()
-    {
-        pauseScreen.gameObject.SetActive(false);
+        //pauseScreen.gameObject.SetActive(false);
     }
 
     // Update is called once per frame
@@ -140,7 +148,7 @@ public class MenuDefualt : MonoBehaviour {
             case MenuType.GotoGall:
                 GotoGallery();
                 break;
-            case MenuType.PauseGame:
+            case MenuType.Pause:
                 PauseGame();
                 break;
             case MenuType.Resume:
@@ -161,21 +169,33 @@ public class MenuDefualt : MonoBehaviour {
 
     void ResumeGame()
     {
+        //일시정지 창을 닫는다
+
+        //if (!pauseMenu.active)
+        //    pauseMenu.gameObject.SetActive(true);
+        //if (pauseScreen.active)
+        //    pauseScreen.gameObject.SetActive(false);
+        
+        //이동을 재개
         CustomMover.Singleton.canMove = !CustomMover.Singleton.canMove;
-        pauseMenu.SetActive(true);
-        pauseScreen.SetActive(false);
     }
 
     void PauseGame()
     {
         //일시정지 창을 띄운다
-        pauseScreen.gameObject.SetActive(true);
-        pauseScreen.transform.position = screenTF.position;
-        pauseScreen.transform.rotation = screenTF.rotation;
-        pauseMenu.gameObject.SetActive(false);
 
+        //if (!pauseScreen.active)
+        //{
+        //    pauseScreen.gameObject.SetActive(true);
+        //    pauseScreen.transform.position = screenTF.position;
+        //    pauseScreen.transform.rotation = screenTF.rotation;
+        //}
 
-        CustomMover.Singleton.canMove = !CustomMover.Singleton.canMove;         //플레이어의 이동을 멈추고, 자이로와 총은 살아있어야 함 
+        //if (pauseMenu.active)
+        //    pauseMenu.gameObject.SetActive(false);
+
+        //플레이어의 이동을 멈추고, 자이로와 총은 살아있어야 함 
+        CustomMover.Singleton.canMove = !CustomMover.Singleton.canMove;         
         //적을 멈추고
 
     }

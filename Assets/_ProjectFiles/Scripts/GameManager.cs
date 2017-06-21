@@ -2,53 +2,27 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public static class InitData
-{
-    
-
-    public static class PistolArmInfo
-    {
-        public static int Ammo = 15;
-        public static float FireRate = 0.1f;
-        public static float BulletDistance = 100f;
-        public static float BulletForce = 50f;
-    }
-}
-
-
 public class GameManager : MonoBehaviour {
+    public static GameManager Singletaon = null;
 
-    public static GameManager Singleton;
-    public static int levels = (1 << 1) | (1 << 2);
-
-    private void OnLevelWasLoaded(int level)
+    private static GameManager Singleton;
+    private static GameObject container;
+    public static GameManager GetInstance()
     {
-        if (level == levels)
+        if (!Singleton)
         {
-
+            container = new GameObject();
+            container.name = "Logger";
+            Singleton = container.AddComponent(typeof(GameManager)) as GameManager;
         }
+        return Singleton;
     }
 
+    public Transform screenTF = null;
+    public GameObject pauseMenu = null;
+    public GameObject pauseScreen = null;
 
-
-    void Awake()
-    {
-        
-        Singleton = this;
-    }
-
-    // Use this for initialization
-    void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
-
-    public void addData()
-    {
-
-    }
+    //http://unityindepth.tistory.com/38
 }
+
+
