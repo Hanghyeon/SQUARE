@@ -14,6 +14,9 @@ public class CustomMover : MonoBehaviour
     public bool isLooping;
     public bool pingPong;
 
+    public bool playDone = false;
+    GameObject leadOBJ = null;
+
     public bool getFreeze { get { return freezeTransition; } }
     public int getCurrentSeg { get { return currentSeg; } }
 
@@ -55,8 +58,11 @@ public class CustomMover : MonoBehaviour
             print("ERROR~!! Rail is NULL~!!!!!");
         }
 
-       
-       
+        GameObject go2 = this.transform.Find("Head/LeadOBJ").gameObject;
+        if (go2 != null)
+            leadOBJ = go2;
+        else
+            print("ERROR~!! leadOBJ is NULL~!!!!!");
 
         OnCompleted += () =>
         {
@@ -79,7 +85,12 @@ public class CustomMover : MonoBehaviour
 
         if (!isCompleted)
             Play(!isReversed);
+    }
 
+    private void LateUpdate()
+    {
+        //leadOBJ.transform.LookAt(CustomRail.Singleton.nodes[currentSeg + 1].transform);
+        leadOBJ.transform.rotation = this.gameObject.transform.rotation;
     }
 
 

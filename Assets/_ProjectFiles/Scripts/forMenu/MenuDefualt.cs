@@ -6,13 +6,12 @@ using UnityEngine.SceneManagement;
 public enum MenuType
 {
     QuitGame = -3,
-    StayGame = -2,
+    GotoGall = -2,
     GotoQuit = -1,
     None = 0,
     GotoPlay = 1,
     PauseGame = 2,
-    
-
+    Resume = 3
 }
 
 public enum camSide
@@ -31,6 +30,9 @@ public class MenuDefualt : MonoBehaviour {
     public MenuType mt = MenuType.None;
     public bool isLookAt = false;
 
+    public Transform screenTF = null;
+    public GameObject pauseMenu = null;
+    public GameObject pauseScreen = null;
     List<Camera> cams = new List<Camera>();
     bool temp;
 
@@ -42,6 +44,24 @@ public class MenuDefualt : MonoBehaviour {
         else
             print("ERROR~!! Player Transform is NULL~!!!!");
 
+        GameObject go2 = GameObject.Find("PauseScreen");
+        if (go2 != null)
+            pauseScreen = go2;
+        else
+            print("ERROR~!! PauseScreen is NULL~!!!!");
+
+        GameObject go3 = GameObject.Find("ScreenPOS");
+        if (go3 != null)
+            screenTF = go3.transform;
+        else
+            print("ERROR~!! screenTF is NULL~!!!!");
+
+        GameObject go4 = GameObject.Find("CameraGroup_Done/Head/Menu/PauseGame");
+        if (go4 != null)
+            pauseMenu = go4;
+        else
+            print("ERROR~!! screenTF is NULL~!!!!");
+
         foreach (Camera item in Player.GetComponentsInChildren<Camera>())
         {
             if (item.name != "VufoCamera")
@@ -50,6 +70,10 @@ public class MenuDefualt : MonoBehaviour {
 
     }
 
+    private void Start()
+    {
+        pauseScreen.gameObject.SetActive(false);
+    }
 
     // Update is called once per frame
     void Update()
@@ -104,9 +128,6 @@ public class MenuDefualt : MonoBehaviour {
             case MenuType.QuitGame:
                 QuitGame();
                 break;
-            case MenuType.StayGame:
-                GotoGallery();
-                break;
             case MenuType.GotoQuit:
                 GotoQuit();
                 break;
@@ -116,8 +137,14 @@ public class MenuDefualt : MonoBehaviour {
             case MenuType.GotoPlay:
                 GotoPlayGame();
                 break;
+            case MenuType.GotoGall:
+                GotoGallery();
+                break;
             case MenuType.PauseGame:
                 PauseGame();
+                break;
+            case MenuType.Resume:
+                ResumeGame();
                 break;
         }
     }
@@ -132,10 +159,25 @@ public class MenuDefualt : MonoBehaviour {
         SceneManager.LoadScene("CheckQuitGame");
     }
 
+    void ResumeGame()
+    {
+        CustomMover.Singleton.canMove = !CustomMover.Singleton.canMove;
+        pauseMenu.SetActive(true);
+        pauseScreen.SetActive(false);
+    }
+
     void PauseGame()
     {
+        //일시정지 창을 띄운다
+        pauseScreen.gameObject.SetActive(true);
+        pauseScreen.transform.position = screenTF.position;
+        pauseScreen.transform.rotation = screenTF.rotation;
+        pauseMenu.gameObject.SetActive(false);
+
+
         CustomMover.Singleton.canMove = !CustomMover.Singleton.canMove;         //플레이어의 이동을 멈추고, 자이로와 총은 살아있어야 함 
         //적을 멈추고
+
     }
 
     void QuitGame()

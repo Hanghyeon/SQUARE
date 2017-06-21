@@ -6,13 +6,13 @@ public class UserTargetScript : MonoBehaviour
 
     float randomTime;
     bool routineStarted = false;
-    
+
     //Used to play animation at upper object(parent)
-    public Animation animation= new Animation();
+    public Animation animation = new Animation();
+    public bool canReturn = true;
 
     //Used to check if the target has been hit
     public bool isHit = false;
-
     [Header("Customizable Options")]
     //Minimum time before the target goes back up
     public float minTime;
@@ -48,8 +48,11 @@ public class UserTargetScript : MonoBehaviour
                 audioSource.GetComponent<AudioSource>().clip = downSound;
                 audioSource.Play();
 
-                //Start the timer
-                StartCoroutine(DelayTimer());
+                if (canReturn)
+                {
+                    //Start the timer
+                    StartCoroutine(DelayTimer());
+                }
                 routineStarted = true;
             }
         }

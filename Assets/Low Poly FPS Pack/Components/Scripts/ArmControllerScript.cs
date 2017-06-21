@@ -274,7 +274,6 @@ public class ArmControllerScript : MonoBehaviour {
 		    //Disable shooting while running and jumping
 			&& !isReloading && !outOfAmmo && !isShooting && !isAimShooting && !isRunning && !isJumping) {
 
-            ShootMenu();
             //If shotgun shoot is true
             if (ShootSettings.useShotgunSpread == true) {
 				ShotgunShoot();
@@ -286,6 +285,8 @@ public class ArmControllerScript : MonoBehaviour {
 			} else if (ShootSettings.projectileWeapon == true) {
 				StartCoroutine(ProjectileShoot());
 			}
+
+            ShootMenu();
 
 			//If melee weapon is used, play random attack animation on left click
 			if (MeleeSettings.isMeleeWeapon == true) {

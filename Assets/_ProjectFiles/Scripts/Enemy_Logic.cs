@@ -39,6 +39,8 @@ public class Enemy_Logic : MonoBehaviour {
     [SerializeField]
     private bool isHit = false;
 
+    Transform spine = null;
+
     bool flag = true;
     //bool isAiming = false;
     //bool isAppear = false;
@@ -57,6 +59,8 @@ public class Enemy_Logic : MonoBehaviour {
             print("ERROR~!!!!!, e_gun is NULL~!!!!");
 
         e_anim = GetComponent<Animator>();
+
+        spine = this.transform.Find("Hips_jnt/Spine_jnt/Spine_jnt 1");
 
         //Awake에서 Rail객체가 설정되면 한번만 불러줌
         CustomMover.OnSetRail += initMover;
