@@ -66,7 +66,7 @@ public class Enemy_Logic : MonoBehaviour {
         CustomMover.OnSetRail += initMover;
 
         //노드에 도착할 때, state 바꿀거 있는지 검사
-        CustomMover.OnCompleted += ChageState;
+        CustomMover.OnArrived += ChageState;
     }
 
 

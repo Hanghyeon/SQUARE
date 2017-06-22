@@ -11,7 +11,8 @@ public enum MenuType
     None = 0,
     GotoPlay = 1,
     Pause = 2,
-    Resume = 3
+    Resume = 3,
+    Next = 4,
 }
 
 public enum camSide

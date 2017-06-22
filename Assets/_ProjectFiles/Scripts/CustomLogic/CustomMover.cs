@@ -17,6 +17,7 @@ public class CustomMover : MonoBehaviour
     public bool playDone = false;
     GameObject leadOBJ = null;
 
+    public bool getCompleted { get { return isCompleted; } }
     public bool getFreeze { get { return freezeTransition; } }
     public int getCurrentSeg { get { return currentSeg; } }
 
@@ -33,6 +34,7 @@ public class CustomMover : MonoBehaviour
     public bool canMove = false;
 
     public delegate void CompleteAction();
+    public static event CompleteAction OnArrived;
     public static event CompleteAction OnCompleted;
 
     public static System.Action OnSetRail;
@@ -58,13 +60,13 @@ public class CustomMover : MonoBehaviour
             print("ERROR~!! Rail is NULL~!!!!!");
         }
 
-        GameObject go2 = this.transform.Find("Head/LeadOBJ").gameObject;
+        Transform go2 = this.transform.Find("Head/LeadOBJ");
         if (go2 != null)
-            leadOBJ = go2;
+            leadOBJ = go2.gameObject;
         else
             print("ERROR~!! leadOBJ is NULL~!!!!!");
 
-        OnCompleted += () =>
+        OnArrived += () =>
         {
             if (CustomRail.Singleton.nodes[currentSeg].setFreeze)
                 freezeTransition = true;
@@ -119,9 +121,9 @@ public class CustomMover : MonoBehaviour
             transition = 0;
             currentSeg++;
 
-            if (OnCompleted != null)
+            if (OnArrived != null)
             {
-                OnCompleted();
+                OnArrived();
             }
 
             if (currentSeg == rail.nodes.Count - 1)
@@ -142,6 +144,8 @@ public class CustomMover : MonoBehaviour
                 else
                 {
                     isCompleted = true;
+                    if (OnCompleted != null)
+                        OnCompleted();
                     return;
                 }
             }
@@ -151,9 +155,9 @@ public class CustomMover : MonoBehaviour
             transition = 1;
             currentSeg--;
 
-            if (OnCompleted != null)
+            if (OnArrived != null)
             {
-                OnCompleted();
+                OnArrived();
             }
 
             if (currentSeg == -1)

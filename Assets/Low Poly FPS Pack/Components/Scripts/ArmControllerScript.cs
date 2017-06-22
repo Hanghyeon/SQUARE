@@ -668,7 +668,10 @@ public class ArmControllerScript : MonoBehaviour {
             hit.transform.gameObject.GetComponent<MenuLite>() != null)
         {
             hit.transform.gameObject.GetComponent<MenuLite>().ChangeHit();
+            GameManager.Singletaon.runMenu(hit.transform.gameObject);
         }
+
+
     }
 
     //Shoot

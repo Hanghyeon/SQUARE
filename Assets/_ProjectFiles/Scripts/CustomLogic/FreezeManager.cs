@@ -29,12 +29,12 @@ public class FreezeManager : MonoBehaviour {
         else
             print("ERROR~!!! Mover is Null~!!!!!!");
 
-        CustomMover.OnCompleted += Init;
+        CustomMover.OnArrived += Init;
     }
 
     private void Start()
     {
-        CustomMover.OnCompleted += startFreeze;
+        CustomMover.OnArrived += startFreeze;
     }
 
     //// Update is called once per frame

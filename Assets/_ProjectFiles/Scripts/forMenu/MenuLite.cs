@@ -13,4 +13,5 @@ public class MenuLite : MonoBehaviour {
         isHit = !isHit;
         print(this.gameObject.name + " is Change " + isHit);
     }
+
 }
